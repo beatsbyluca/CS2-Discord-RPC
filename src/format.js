@@ -29,6 +29,12 @@ function mapName(raw) {
     .replace(/\b\w/g, char => char.toUpperCase());
 }
 
+function imageRef(key, imageBaseUrl) {
+  return imageBaseUrl
+    ? `${imageBaseUrl.replace(/\/+$/, '')}/${encodeURIComponent(key)}.png`
+    : key;
+}
+
 function activityFromGsi(data, imageBaseUrl = '') {
   const map = data?.map;
   if (!map || typeof map !== 'object' || !map.name) {
@@ -42,12 +48,17 @@ function activityFromGsi(data, imageBaseUrl = '') {
   const hasScore = Number.isInteger(ct) && Number.isInteger(t);
   const state = hasScore ? `CT ${ct} : ${t} T` : 'Match läuft';
   const activity = { details: `${mode} · ${name}`, state };
+  const assets = {};
   if (assetKeys.has(map.name)) {
-    const image = imageBaseUrl
-      ? `${imageBaseUrl.replace(/\/+$/, '')}/${encodeURIComponent(map.name)}.png`
-      : map.name;
-    activity.assets = { large_image: image, large_text: name };
+    assets.large_image = imageRef(map.name, imageBaseUrl);
+    assets.large_text = name;
   }
+  const team = typeof data.player?.team === 'string' ? data.player.team.toUpperCase() : '';
+  if (team === 'CT' || team === 'T') {
+    assets.small_image = imageRef(team === 'CT' ? 'ct_logo' : 't_logo', imageBaseUrl);
+    assets.small_text = team === 'CT' ? 'Counter-Terroristen' : 'Terroristen';
+  }
+  if (Object.keys(assets).length) activity.assets = assets;
   return activity;
 }
 

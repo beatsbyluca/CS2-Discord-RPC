@@ -32,3 +32,15 @@ test('verwendet eine gemeinsame öffentliche Bild-URL', () => {
     large_text: 'Mirage'
   });
 });
+
+test('zeigt das eigene Team als kleines Bild und entfernt es als Zuschauer', () => {
+  const data = { map: { name: 'de_mirage', mode: 'competitive' }, player: { team: 'CT' } };
+  assert.equal(activityFromGsi(data, 'https://example.com/assets').assets.small_image,
+    'https://example.com/assets/ct_logo.png');
+  assert.equal(activityFromGsi(data).assets.small_text, 'Counter-Terroristen');
+  data.player.team = 'T';
+  assert.equal(activityFromGsi(data, 'https://example.com/assets').assets.small_image,
+    'https://example.com/assets/t_logo.png');
+  data.player.team = 'SPECTATOR';
+  assert.equal(activityFromGsi(data).assets.small_image, undefined);
+});

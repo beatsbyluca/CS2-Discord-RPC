@@ -45,6 +45,7 @@ $gsi = @"
     "data"
     {
         "map" "1"
+        "player_id" "1"
     }
 }
 "@

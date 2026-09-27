@@ -14,10 +14,14 @@ Beispielanzeige: `Wettkampf · Mirage` / `CT 8 : 6 T`.
 
 ## Map-Bilder ohne Discord-Upload
 
-Die 49 Map-Bilder liegen in `assets/`. `imageBaseUrl` in `config.json` zeigt auf den
+Die 49 Map-Bilder und zwei Team-Logos liegen in `assets/`. `imageBaseUrl` in `config.json` zeigt auf den
 öffentlichen `assets/`-Ordner dieses Repos. Das Programm sendet Discord für eine
 Map wie `de_mirage` die URL `.../assets/de_mirage.png` als `large_image`. Nutzer
 müssen die Bilder dadurch **nicht** in ihrer Discord Application hochladen.
+
+Das kleine Bild zeigt das aktuelle Team des Spielers: CT oder T. Dafür abonniert
+die GSI-Konfiguration neben `map` auch `player_id`. Im Menü oder als Zuschauer
+wird kein Team-Logo angezeigt. Nach einem Update der Konfiguration CS2 neu starten.
 
 Der Repo-Besitzer muss die Bilder einmal öffentlich bereitstellen. Wird das
 Repo unter einem anderen GitHub-Namen oder Branch veröffentlicht, muss
