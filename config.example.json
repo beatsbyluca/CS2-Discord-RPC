@@ -1,0 +1,5 @@
+{
+  "discordApplicationId": "DEINE_DISCORD_APPLICATION_ID",
+  "port": 31982,
+  "imageBaseUrl": "https://raw.githubusercontent.com/beatsbyluca/CS2-Discord-RPC/main/assets"
+}

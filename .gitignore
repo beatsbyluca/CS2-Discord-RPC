@@ -1,0 +1,4 @@
+config.json
+presence.log
+presence-error.log
+node_modules/
