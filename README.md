@@ -29,7 +29,3 @@ If you run from source, keep the folder in place and use `start.cmd` or `src/sta
 - If Discord shows two CS2 activities, disable its automatic CS2 game detection under **Registered Games**.
 
 For developers, `npm start` runs the same app with a system Node.js installation. The image URL is configured through `imageBaseUrl` in `config.json`; it defaults to this repository's public `assets/` directory.
-
-## Build a release
-
-On Windows, run `Build-Installer.ps1` from PowerShell. It uses the Windows .NET Framework compiler and creates `dist/CS2-Discord-RPC-Setup.exe`. The embedded payload includes the application files and assets, but excludes local config, logs, and runtime downloads. Pushing a `v*` tag builds and attaches the EXE to its GitHub release.
