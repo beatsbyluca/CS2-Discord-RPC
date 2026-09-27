@@ -29,8 +29,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $tag = $env:GITHUB_REF_NAME
-          gh release view $tag --repo $env:GITHUB_REPOSITORY *> $null
-          if ($LASTEXITCODE -ne 0) {
+          $releases = gh release list --repo $env:GITHUB_REPOSITORY --json tagName --limit 100 | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Could not list releases' }
+          if (-not ($releases | Where-Object { $_.tagName -eq $tag })) {
             gh release create $tag --repo $env:GITHUB_REPOSITORY --title $tag --generate-notes
             if ($LASTEXITCODE -ne 0) { throw 'Could not create the release' }
           }
