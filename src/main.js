@@ -29,6 +29,7 @@ if (imageBaseUrl && !/^https:\/\/[a-z0-9.-]+(?:\/[^\s]*)?$/i.test(imageBaseUrl))
 const rpc = new DiscordRpc(String(config.discordApplicationId), message => console.log(message));
 let lastActivity = '';
 let lastGsiAt = 0;
+let shuttingDown = false;
 function update(activity) {
   const key = JSON.stringify(activity);
   if (key === lastActivity) return;
@@ -38,6 +39,15 @@ function update(activity) {
 }
 
 const server = http.createServer((req, res) => {
+  if (req.method === 'POST' && req.url === '/quit' && process.env.CS2_RPC_TRAY_TOKEN) {
+    const remote = req.socket.remoteAddress;
+    if (!['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(remote) ||
+        req.headers['x-tray-token'] !== process.env.CS2_RPC_TRAY_TOKEN) {
+      res.writeHead(403).end(); return;
+    }
+    res.writeHead(200).end('Stopping', shutdown);
+    return;
+  }
   if (req.method !== 'POST' || req.url !== '/') { res.writeHead(404).end(); return; }
   const remote = req.socket.remoteAddress;
   if (!['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(remote)) {
@@ -71,5 +81,13 @@ setInterval(() => {
   }
 }, 10000).unref();
 
-process.on('SIGINT', () => { rpc.stop(); server.close(); });
-process.on('SIGTERM', () => { rpc.stop(); server.close(); });
+function shutdown() {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  rpc.stop();
+  server.close();
+  server.closeAllConnections();
+}
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);

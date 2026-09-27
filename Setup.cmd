@@ -217,6 +217,7 @@ try {
         $shortcut = $shell.CreateShortcut($shortcutPath)
         $shortcut.TargetPath = Join-Path $projectDir 'start.cmd'
         $shortcut.WorkingDirectory = $projectDir
+        $shortcut.IconLocation = Join-Path $projectDir 'assets\tray.ico'
         $shortcut.Description = 'Start CS2 Discord RPC'
         $shortcut.Save()
         Write-Host "Shortcut created: $shortcutPath"

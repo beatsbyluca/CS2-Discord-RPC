@@ -22,7 +22,10 @@ jobs:
           & .\dist\CS2-Discord-RPC-Setup.exe --extract-only .\dist\verify
           if ($LASTEXITCODE -ne 0) { throw 'Installer extraction failed' }
           if (-not (Test-Path .\dist\verify\Setup.cmd)) { throw 'Setup.cmd is missing' }
-          if ((Get-ChildItem .\dist\verify\assets -File).Count -ne 51) { throw 'Image payload is incomplete' }
+          if ((Get-ChildItem .\dist\verify\assets -File).Count -ne 52) { throw 'Image payload is incomplete' }
+          foreach ($path in @('src\tray.ps1', 'src\start.vbs', 'assets\tray.ico', 'start.cmd')) {
+            if (-not (Test-Path (Join-Path .\dist\verify $path))) { throw "Missing payload item: $path" }
+          }
       - name: Publish release
         shell: powershell
         env:

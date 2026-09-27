@@ -118,7 +118,7 @@ class DiscordRpc {
     if (this.socket) {
       this.activity = null;
       this.publish();
-      this.socket.end();
+      this.socket.destroySoon();
     }
   }
 }
