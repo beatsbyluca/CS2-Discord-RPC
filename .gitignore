@@ -1,4 +1,5 @@
 config.json
-presence.log
-presence-error.log
+logs/*
+!logs/.gitkeep
+runtime/
 node_modules/
