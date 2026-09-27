@@ -2,4 +2,5 @@ config.json
 logs/*
 !logs/.gitkeep
 runtime/
+dist/
 node_modules/

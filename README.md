@@ -4,12 +4,14 @@ Show your current Counter-Strike 2 map, mode, CT/T score, and team in Discord Ri
 
 ## Easy setup on Windows
 
-1. Download this repository as a ZIP from GitHub and extract it to a folder you want to keep.
-2. Double-click **`Setup.cmd`**. A console wizard walks through the setup. It finds CS2 in your Steam libraries, offers the shared Discord Application ID, and creates a desktop shortcut. If Node.js is missing, it downloads a portable LTS copy from the official Node.js site and verifies its SHA-256 checksum.
+1. Download **`CS2-Discord-RPC-Setup.exe`** from the [latest release](https://github.com/beatsbyluca/CS2-Discord-RPC/releases/latest).
+2. Run the EXE. It installs the app to `%LOCALAPPDATA%\CS2 RPC` and opens a console wizard. The wizard finds CS2 in your Steam libraries, offers the shared Discord Application ID, and creates a desktop shortcut. If Node.js is missing, it downloads a portable LTS copy from the official Node.js site and verifies its SHA-256 checksum.
 3. Restart CS2 if it was open during setup. Open the Discord desktop app.
 4. Double-click **CS2 Discord RPC** on your desktop, or run `start.cmd` in the project folder. Keep its console window open while playing.
 
-The wizard stores your settings in `config.json` and writes `gamestate_integration_discord_presence.cfg` into CS2's config folder. Run `Setup.cmd` again to change the CS2 path or Discord Application ID, then restart this app. No administrator rights are needed for the normal setup.
+The wizard stores your settings in `config.json` and writes `gamestate_integration_discord_presence.cfg` into CS2's config folder. Run the installer again to update the app, or run `Setup.cmd` in the installed folder to change the CS2 path or Discord Application ID. Restart this app after an update. No administrator rights are needed for the normal setup.
+
+If you prefer the source ZIP, extract it to a folder you want to keep and double-click `Setup.cmd` there.
 
 ## What it shows
 
@@ -26,3 +28,7 @@ The wizard stores your settings in `config.json` and writes `gamestate_integrati
 - If Discord shows two CS2 activities, disable its automatic CS2 game detection under **Registered Games**.
 
 For developers, `npm start` runs the same app with a system Node.js installation. The image URL is configured through `imageBaseUrl` in `config.json`; it defaults to this repository's public `assets/` directory.
+
+## Build a release
+
+On Windows, run `Build-Installer.ps1` from PowerShell. It uses the Windows .NET Framework compiler and creates `dist/CS2-Discord-RPC-Setup.exe`. The embedded payload includes the application files and assets, but excludes local config, logs, and runtime downloads. Pushing a `v*` tag builds and attaches the EXE to its GitHub release.
