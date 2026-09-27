@@ -6,23 +6,23 @@ const { DiscordRpc } = require('./discord');
 
 const configPath = path.join(__dirname, '..', 'config.json');
 if (!fs.existsSync(configPath)) {
-  console.error('config.json fehlt. README.md erklärt die Einrichtung.');
+  console.error('config.json is missing. See README.md for setup instructions.');
   process.exit(1);
 }
 let config;
 try { config = JSON.parse(fs.readFileSync(configPath, 'utf8').replace(/^\uFEFF/, '')); }
-catch (error) { console.error(`config.json ungültig: ${error.message}`); process.exit(1); }
+catch (error) { console.error(`Invalid config.json: ${error.message}`); process.exit(1); }
 if (!/^\d{17,20}$/.test(String(config.discordApplicationId || ''))) {
-  console.error('Bitte discordApplicationId in config.json eintragen.');
+  console.error('Set discordApplicationId in config.json.');
   process.exit(1);
 }
 const port = Number(config.port || 31982);
 if (!Number.isInteger(port) || port < 1 || port > 65535) {
-  console.error('Ungültiger Port in config.json.'); process.exit(1);
+  console.error('Invalid port in config.json.'); process.exit(1);
 }
 const imageBaseUrl = String(config.imageBaseUrl || '').trim();
 if (imageBaseUrl && !/^https:\/\/[a-z0-9.-]+(?:\/[^\s]*)?$/i.test(imageBaseUrl)) {
-  console.error('imageBaseUrl muss eine öffentliche HTTPS-Adresse sein.');
+  console.error('imageBaseUrl must be a public HTTPS URL.');
   process.exit(1);
 }
 
@@ -34,7 +34,7 @@ function update(activity) {
   if (key === lastActivity) return;
   lastActivity = key;
   rpc.setActivity(activity);
-  console.log(`Status: ${activity ? `${activity.details} | ${activity.state}` : 'ausgeblendet'}`);
+  console.log(`Status: ${activity ? `${activity.details} | ${activity.state}` : 'hidden'}`);
 }
 
 const server = http.createServer((req, res) => {
@@ -59,7 +59,7 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, '127.0.0.1', () => {
-  console.log(`Warte auf CS2 GSI auf http://127.0.0.1:${port}/`);
+  console.log(`Waiting for CS2 GSI at http://127.0.0.1:${port}/`);
   rpc.start();
 });
 server.on('error', error => { console.error(`HTTP-Server: ${error.message}`); process.exit(1); });

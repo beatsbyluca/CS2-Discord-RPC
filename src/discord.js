@@ -32,7 +32,7 @@ class DiscordRpc {
   trySlot(slot) {
     if (this.stopped) return;
     if (slot > 9) {
-      this.onStatus('Discord nicht erreichbar; neuer Versuch in 3 Sekunden.');
+      this.onStatus('Discord is unavailable; retrying in 3 seconds.');
       this.scheduleRetry();
       return;
     }
@@ -52,7 +52,7 @@ class DiscordRpc {
         socket.destroy();
         this.trySlot(slot + 1);
       } else {
-        this.onStatus(`Discord-Verbindung: ${error.message}`);
+        this.onStatus(`Discord connection: ${error.message}`);
       }
     });
   }
@@ -75,10 +75,10 @@ class DiscordRpc {
         try { message = JSON.parse(body.toString('utf8')); } catch { continue; }
         if (message.evt === 'READY') {
           this.ready = true;
-          this.onStatus('Mit Discord verbunden.');
+          this.onStatus('Connected to Discord.');
           this.publish();
         } else if (message.evt === 'ERROR') {
-          this.onStatus(`Discord-Fehler: ${message.data?.message || 'unbekannt'}`);
+          this.onStatus(`Discord error: ${message.data?.message || 'unknown'}`);
         }
       }
     });
@@ -86,7 +86,7 @@ class DiscordRpc {
       if (this.socket !== socket) return;
       this.socket = null;
       this.ready = false;
-      if (!this.stopped) { this.onStatus('Discord getrennt.'); this.scheduleRetry(); }
+      if (!this.stopped) { this.onStatus('Disconnected from Discord.'); this.scheduleRetry(); }
     });
   }
 

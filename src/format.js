@@ -1,10 +1,10 @@
 const MODES = {
-  competitive: 'Wettkampf',
-  casual: 'Gelegenheitsspiel',
+  competitive: 'Competitive',
+  casual: 'Casual',
   deathmatch: 'Deathmatch',
   wingman: 'Wingman',
-  armsrace: 'Wettrüsten',
-  demolition: 'Zerstörung'
+  armsrace: 'Arms Race',
+  demolition: 'Demolition'
 };
 
 const fs = require('node:fs');
@@ -24,7 +24,7 @@ const MAPS = {
 };
 
 function mapName(raw) {
-  if (typeof raw !== 'string' || !raw) return 'Unbekannte Map';
+  if (typeof raw !== 'string' || !raw) return 'Unknown Map';
   return MAPS[raw] || raw.replace(/^(de|cs)_/, '').replace(/_/g, ' ')
     .replace(/\b\w/g, char => char.toUpperCase());
 }
@@ -38,15 +38,15 @@ function imageRef(key, imageBaseUrl) {
 function activityFromGsi(data, imageBaseUrl = '') {
   const map = data?.map;
   if (!map || typeof map !== 'object' || !map.name) {
-    return { details: 'Im Menü', state: 'Wartet auf ein Match' };
+    return { details: 'In Menu', state: 'Waiting for a match' };
   }
   const mode = MODES[map.mode] || (typeof map.mode === 'string' && map.mode
-    ? map.mode : 'Unbekannter Modus');
+    ? map.mode : 'Unknown Mode');
   const name = mapName(map.name);
   const ct = map.team_ct?.score;
   const t = map.team_t?.score;
   const hasScore = Number.isInteger(ct) && Number.isInteger(t);
-  const state = hasScore ? `CT ${ct} : ${t} T` : 'Match läuft';
+  const state = hasScore ? `CT ${ct} : ${t} T` : 'Match in progress';
   const activity = { details: `${mode} · ${name}`, state };
   const assets = {};
   if (assetKeys.has(map.name)) {
@@ -56,7 +56,7 @@ function activityFromGsi(data, imageBaseUrl = '') {
   const team = typeof data.player?.team === 'string' ? data.player.team.toUpperCase() : '';
   if (team === 'CT' || team === 'T') {
     assets.small_image = imageRef(team === 'CT' ? 'ct_logo' : 't_logo', imageBaseUrl);
-    assets.small_text = team === 'CT' ? 'Counter-Terroristen' : 'Terroristen';
+    assets.small_text = team === 'CT' ? 'Counter-Terrorists' : 'Terrorists';
   }
   if (Object.keys(assets).length) activity.assets = assets;
   return activity;

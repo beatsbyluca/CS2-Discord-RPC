@@ -4,7 +4,7 @@ $ErrorActionPreference = 'Stop'
 $projectDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 if (-not $Cs2CfgDir) {
     $steamRoot = (Get-ItemProperty 'HKCU:\Software\Valve\Steam' -ErrorAction SilentlyContinue).SteamPath
-    if (-not $steamRoot) { throw 'Steam nicht gefunden. Bitte -Cs2CfgDir angeben.' }
+    if (-not $steamRoot) { throw 'Steam was not found. Specify -Cs2CfgDir.' }
     $libraries = @($steamRoot)
     $libraryFile = Join-Path $steamRoot 'steamapps\libraryfolders.vdf'
     if (Test-Path -LiteralPath $libraryFile) {
@@ -23,7 +23,7 @@ if (-not $Cs2CfgDir) {
     }
 }
 if (-not (Test-Path -LiteralPath $Cs2CfgDir -PathType Container)) {
-    throw 'CS2-Konfigurationsordner nicht gefunden. Bitte -Cs2CfgDir angeben.'
+    throw 'The CS2 config directory was not found. Specify -Cs2CfgDir.'
 }
 
 $configPath = Join-Path $projectDir 'config.json'
@@ -32,7 +32,7 @@ if (-not (Test-Path -LiteralPath $configPath)) {
 }
 $config = Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json
 $port = [int]$config.port
-if ($port -lt 1 -or $port -gt 65535) { throw 'Ungültiger Port in config.json' }
+if ($port -lt 1 -or $port -gt 65535) { throw 'Invalid port in config.json' }
 
 $gsi = @"
 "CS2 Discord Presence"
@@ -51,6 +51,6 @@ $gsi = @"
 "@
 $target = Join-Path $Cs2CfgDir 'gamestate_integration_discord_presence.cfg'
 Set-Content -LiteralPath $target -Value $gsi -Encoding ascii
-Write-Host "GSI eingerichtet: $target"
-Write-Host "Discord Application ID in $configPath eintragen, dann start.cmd ausführen."
-Write-Host 'Falls CS2 schon läuft: Spiel neu starten.'
+Write-Host "GSI configured: $target"
+Write-Host "Set the Discord Application ID in $configPath, then run start.cmd."
+Write-Host 'If CS2 is running, restart the game.'

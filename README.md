@@ -1,45 +1,32 @@
-# CS2 Discord Presence
+# CS2 Discord RPC
 
-Zeigt Map, Spielmodus und CT/T-Spielstand aus Counter-Strike 2 in Discord Rich Presence an. Läuft lokal auf Windows mit Node.js, ohne zusätzliche Pakete.
+Show the current Counter-Strike 2 map, mode, CT/T score, and your team in Discord Rich Presence. The app runs locally on Windows with Node.js and has no package dependencies.
 
-## Einrichtung
+## Setup
 
-1. Node.js 18 oder neuer und den Discord Desktop-Client installieren.
-2. Auf https://discord.com/developers/applications eine Application erstellen und die **Application ID** unter **General Information** kopieren.
-3. `config.example.json` als `config.json` kopieren und `discordApplicationId` eintragen. Der Application-Name ist der Titel der Discord-Aktivität.
-4. `install.ps1` in PowerShell ausführen. Das Skript sucht CS2 in den Steam-Bibliotheken. Falls es den Ordner nicht findet: `./install.ps1 -Cs2CfgDir 'X:\...\game\csgo\cfg'`.
-5. CS2 neu starten, Discord Desktop öffnen und `start.cmd` ausführen. Das Fenster während des Spielens geöffnet lassen.
+1. Install Node.js 18 or newer and the Discord desktop app.
+2. Create an application at https://discord.com/developers/applications. Copy its **Application ID** from **General Information**. The application name appears as the title of your Discord activity.
+3. Copy `config.example.json` to `config.json` and set `discordApplicationId`.
+4. Run `install.ps1` in PowerShell. It searches your Steam libraries for CS2. If it cannot find the game, run `./install.ps1 -Cs2CfgDir 'X:\...\game\csgo\cfg'` with the correct path.
+5. Restart CS2, open Discord, and run `start.cmd`. Keep the window open while playing.
 
-Beispielanzeige: `Wettkampf · Mirage` / `CT 8 : 6 T`.
+Example: `Competitive · Mirage` / `CT 8 : 6 T`.
 
-## Map-Bilder ohne Discord-Upload
+## Images
 
-Die 49 Map-Bilder und zwei Team-Logos liegen in `assets/`. `imageBaseUrl` in `config.json` zeigt auf den
-öffentlichen `assets/`-Ordner dieses Repos. Das Programm sendet Discord für eine
-Map wie `de_mirage` die URL `.../assets/de_mirage.png` als `large_image`. Nutzer
-müssen die Bilder dadurch **nicht** in ihrer Discord Application hochladen.
+The `assets/` directory contains 49 map images and two team logos. The app uses the public `imageBaseUrl` in `config.json` to send Discord an image URL such as `.../assets/de_mirage.png`. Users do not need to upload images to their own Discord applications.
 
-Das kleine Bild zeigt das aktuelle Team des Spielers: CT oder T. Dafür abonniert
-die GSI-Konfiguration neben `map` auch `player_id`. Im Menü oder als Zuschauer
-wird kein Team-Logo angezeigt. Nach einem Update der Konfiguration CS2 neu starten.
+The map is the large image. Your current team (CT or T) is the small image. The team badge is omitted in the menu and while spectating. The GSI configuration subscribes to `map` and `player_id` to get these details. Restart CS2 after changing the GSI configuration.
 
-Der Repo-Besitzer muss die Bilder einmal öffentlich bereitstellen. Wird das
-Repo unter einem anderen GitHub-Namen oder Branch veröffentlicht, muss
-`imageBaseUrl` in `config.example.json` entsprechend angepasst werden. Der
-bereits eingetragene Pfad funktioniert erst, sobald dieses Repo dort öffentlich
-ist. Ein anderer öffentlicher HTTPS-Bildhost kann genauso verwendet werden.
+The default image URL points to this public GitHub repository. If you publish a fork under a different account or branch, update `imageBaseUrl` in `config.example.json`. You can also use another public HTTPS image host. If `imageBaseUrl` is empty, the app uses Discord art asset keys instead, which requires uploading the images to your application.
 
-Ohne `imageBaseUrl` verwendet das Programm stattdessen den Dateinamen als
-Discord-Art-Asset-Key. Das ist nur sinnvoll, wenn die Bilder bereits in der
-Application hochgeladen wurden.
+## Notes
 
-## Hinweise
+- CS2 reports both Premier and standard Competitive as `competitive` through GSI, so the presence shows **Competitive** for both.
+- The activity clears after 90 seconds without GSI data. Discord connections retry automatically.
+- The CS2 data receiver listens only on `127.0.0.1`.
+- If Discord shows two CS2 activities, you can disable its automatic CS2 game detection under **Registered Games**.
 
-- Die CS2 GSI liefert `competitive` als Modus. Premier und normaler Wettkampf lassen sich daraus nicht zuverlässig auseinanderhalten; deshalb zeigt das Programm in beiden Fällen **Wettkampf**.
-- Wenn 90 Sekunden keine Daten aus CS2 eintreffen, wird die Aktivität entfernt. Discord-Verbindungsabbrüche werden automatisch erneut versucht.
-- Die Verbindung zwischen CS2 und diesem Programm läuft nur über `127.0.0.1`.
-- Falls Discord zwei Aktivitäten für CS2 zeigt, kannst du die automatische Spielanzeige für CS2 in Discord unter **Registrierte Spiele** deaktivieren.
+## Tests
 
-## Test
-
-`npm test` prüft die Formatierung und die Bild-URL anhand von Beispieldaten. Für einen echten Funktionstest müssen Discord Desktop und CS2 laufen und die Application ID eingetragen sein.
+Run `npm test` to check status formatting and image URLs. To verify the full integration, run CS2 and Discord with a valid Application ID.
